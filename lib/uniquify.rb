@@ -12,10 +12,10 @@ module Uniquify
   module ClassMethods
 
     def uniquify(*args, &block)
-      options = { :length => 8, :chars => ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a }
+      options = { :length => 8, :chars => ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a, :unless_block => Proc.new {} }
       options.merge!(args.pop) if args.last.kind_of? Hash
       args.each do |name|
-        before_validation :on => :create do |record|
+        before_validation :on => :create, :unless => options[:unless_block] do |record|
           if block
             record.ensure_unique(name, &block)
           else
